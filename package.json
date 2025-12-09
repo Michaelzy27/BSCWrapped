@@ -4,7 +4,9 @@
   "description": "",
   "main": "bsc.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/bsc.ts",
+    "build": "tsc",
+    "start": "node dist/bsc.js"
   },
   "keywords": [],
   "author": "",
