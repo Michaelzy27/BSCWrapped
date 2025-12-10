@@ -561,7 +561,7 @@ async function initialfn() {
     
 }
 
-initialfn();
+//initialfn();
 
 app.get("/fetch", async (req, res) => {
     const analyzer = new WalletAnalyer();
