@@ -157,7 +157,7 @@ class WalletAnalyer {
         const response = await axios.get(`https://deep-index.moralis.io/api/v2.2/erc20/${bnbContractAddress}/price?chain=bsc&to_block=${blockNumber}`, {
             headers: {
                 accept: "application/json",
-                'X-API-Key': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6Ijc2YTlkOTYyLWI2OWMtNGJlOC04NDA2LTRhZTVjYjFjOWEwZiIsIm9yZ0lkIjoiNDg1MTczIiwidXNlcklkIjoiNDk5MTUyIiwidHlwZUlkIjoiODJhNDRkNDUtNGVjMS00YWRmLWI1ZDYtZjA2MTg4NzgwMzI0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NjUyMzAzMzgsImV4cCI6NDkyMDk5MDMzOH0.iSuwnIY4qiQuobZwWAZVJVjNwbyZNxpiVleIrdvhLng'
+                'X-API-Key': process.env.MORALIS_KEY
             },
         })
 
@@ -243,6 +243,121 @@ class WalletAnalyer {
             TOTAL_PNL,
         })
     }
+
+// data = {
+//         tokens:  [
+//     {
+//         tokenName: 'Spirit Realm AI',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 172.15812423805943,
+//         buyValue: 95.15670233570378,
+//         sellValue: 77.00142190235563,
+//         PNL: -18.155280433348153
+//         }
+//     },
+//     {
+//         tokenName: 'JUDICA',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 65.1135066792722,
+//         buyValue: 54.282827180533104,
+//         sellValue: 10.8306794987391,
+//         PNL: -43.452147681794
+//         }
+//     },
+//     {
+//         tokenName: 'Unibase402',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 111.98013606895839,
+//         buyValue: 98.49474796129807,
+//         sellValue: 13.48538810766032,
+//         PNL: -85.00935985363776
+//         }
+//     },
+//     {
+//         tokenName: 'Bitcoin Vs Gold',
+//         details: {
+//         totalSwaps: 1,
+//         totalVolume: 125.54411935197498,
+//         buyValue: 0,
+//         sellValue: 125.54411935197498,
+//         PNL: 125.54411935197498
+//         }
+//     },
+//     {
+//         tokenName: 'PUNG',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 22.805584218390933,
+//         buyValue: 17.36635419309795,
+//         sellValue: 5.439230025292982,
+//         PNL: -11.927124167804969
+//         }
+//     },
+//     {
+//         tokenName: 'X101',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 103.64263159674746,
+//         buyValue: 94.7482978930321,
+//         sellValue: 8.894333703715361,
+//         PNL: -85.85396418931674
+//         }
+//     },
+//     {
+//         tokenName: 'Crypto 2.0',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 101.12402630987826,
+//         buyValue: 96.57073437807112,
+//         sellValue: 4.553291931807141,
+//         PNL: -92.01744244626398
+//         }
+//     },
+//     {
+//         tokenName: 'Capital Of Crypto',
+//         details: {
+//         totalSwaps: 1,
+//         totalVolume: 9.25758004035568,
+//         buyValue: 0,
+//         sellValue: 9.25758004035568,
+//         PNL: 9.25758004035568
+//         }
+//     },
+//     {
+//         tokenName: 'BONERBOTS',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 230.19445082117699,
+//         buyValue: 96.53827534229946,
+//         sellValue: 133.65617547887754,
+//         PNL: 37.117900136578086
+//         }
+//     },
+//     {
+//         tokenName: 'giga cz',
+//         details: {
+//         totalSwaps: 2,
+//         totalVolume: 105.28432701862523,
+//         buyValue: 94.96798590602191,
+//         sellValue: 10.31634111260332,
+//         PNL: -84.65164479341858
+//         }
+//     }
+//     ]
+//     user details:  [
+//     {
+//         BEST_TRADE: { tokenName: 'Bitcoin Vs Gold', details: [Object] },
+//         WORST_TRADE: { tokenName: 'Crypto 2.0', details: [Object] },
+//         WIN_RATE: 0,
+//         MOST_TRADED_TOKEN: '',
+//         TOTAL_GAS: 0,
+//         TOTAL_PNL: -249.14736403667547
+//     }
+//     ]
+// }
 
     getTokens() {
         return this.tokens;
