@@ -57,6 +57,9 @@ class WalletAnalyer {
             },
         })
 
+        console.log("API KEY: ", process.env.MORALIS_KEY);
+        
+
         const data = response.data;
         // console.log("Data: ", JSON.stringify(data, null, 2));
         // console.log("ERC Transfers: ", data.result[2].erc20_transfers);
@@ -538,7 +541,7 @@ app.get("/fetch", async (req, res) => {
     const address = req.query.address;
 
     const result = await analyzer.fetchBscData(address);
-    //const userDetails = analyzer.analyzeUserDetails();
+    const userDetails = analyzer.analyzeUserDetails();
     // res.send({
     //     tokens: analyzer.getTokens(),
     //     userDetails: analyzer.getUserDetails()
