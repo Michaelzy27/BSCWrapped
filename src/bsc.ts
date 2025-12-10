@@ -37,7 +37,7 @@ interface UserDetail {
     BEST_TRADE: any;
     WORST_TRADE: any;
     WIN_RATE: number;
-    MOST_TRADED_TOKEN: string;
+    MOST_TRADED_TOKEN: any;
     TOTAL_GAS_IN_BNB: number;
     TOTAL_GAS_IN_USD: number;
     TOTAL_PNL: number;
@@ -270,7 +270,7 @@ class WalletAnalyer {
             BEST_TRADE: bestTrade,
             WORST_TRADE: worstTrade,
             WIN_RATE,
-            MOST_TRADED_TOKEN: mostTraded.tokenName,
+            MOST_TRADED_TOKEN: mostTraded,
             TOTAL_GAS_IN_BNB: this.TOTAL_GAS_USED,
             TOTAL_GAS_IN_USD: totalGasInUsd,
             TOTAL_PNL,
