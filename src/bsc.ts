@@ -1,16 +1,12 @@
 import axios from 'axios';
-// import express from 'express';
+import express from 'express';
 
-// const app = express();
-// app.use(express.json());
+const app = express();
+app.use(express.json());
 
-// const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// app.get("/fetch", (req, res) => {
-//     fetchBscData().then(data => {
-//         res.send(data);
-//     })
-// });
+
 
 // BEST TRADE, WORST TRADE, WIN RATE, MOST TRADED TOKEN, TOTAL GAS, TOTAL PNL.
 
@@ -356,4 +352,25 @@ async function initialfn() {
     
 }
 
-initialfn();
+//initialfn();
+
+app.get("/fetch", async (req, res) => {
+    const analyzer = new WalletAnalyer();
+    //const address = "0xf52cbff41f95886711f7343fc43928d2416eccc9";
+    const address = req.query.address;
+
+    const result = await analyzer.fetchBscData(address);
+    // res.send({
+    //     tokens: analyzer.getTokens(),
+    //     userDetails: analyzer.getUserDetails()
+    // });
+    res.json({
+        tokens: analyzer.getTokens(),
+        userDetails: analyzer.getUserDetails()
+    });
+    
+
+    // fetchBscData().then(data => {
+    //     res.send(data);
+    // })
+});
