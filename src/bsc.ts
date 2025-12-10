@@ -374,3 +374,5 @@ app.get("/fetch", async (req, res) => {
     //     res.send(data);
     // })
 });
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
