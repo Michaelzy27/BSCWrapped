@@ -420,7 +420,7 @@ app.get("/fetch", async (req, res) => {
     const address = req.query.address;
 
     const result = await analyzer.fetchBscData(address);
-    const userDetails = analyzer.analyzeUserDetails();
+    //const userDetails = analyzer.analyzeUserDetails();
     // res.send({
     //     tokens: analyzer.getTokens(),
     //     userDetails: analyzer.getUserDetails()
