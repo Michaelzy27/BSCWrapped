@@ -45,6 +45,7 @@ interface UserDetail {
 class WalletAnalyer {
     private tokens: Token[] = [];
     private userDetails: UserDetail[] = [];
+    private TOTAL_SWAP_COUNT: number = 0;
 
     constructor() {}
 
@@ -68,7 +69,7 @@ class WalletAnalyer {
         const allTokenSwaps =  data.result.filter((tx: any) => tx.category === "token swap");
         //console.log("All token swaps: ", allTokenSwaps);
 
-        const TOTAL_SWAP_COUNT = allTokenSwaps.length;   //the total swaps made by the wallet.        
+        this.TOTAL_SWAP_COUNT = allTokenSwaps.length;   //the total swaps made by the wallet.        
         
         await this.analyzeTokenSwaps(allTokenSwaps);
         
@@ -234,17 +235,24 @@ class WalletAnalyer {
         //lowest pnl
         const worstTrade = this.tokens.reduce((min, token) => (token.details.PNL < min.details.PNL) ? token : min);
 
+        //most traded token
+        const mostTraded = this.tokens.reduce((max, token) => (token.details.totalSwaps > max.details.totalSwaps) ? token : max);
+
         //total pnl
         let TOTAL_PNL = 0;
         for (const token of this.tokens) {
             TOTAL_PNL += token.details.PNL;
         }
 
+        //win rate
+        const positivePNLCount = this.tokens.filter(token => token.details.PNL > 0).length
+        const WIN_RATE = (positivePNLCount / this.TOTAL_SWAP_COUNT) * 100;
+
         this.userDetails.push({
             BEST_TRADE: bestTrade,
             WORST_TRADE: worstTrade,
-            WIN_RATE: 0,
-            MOST_TRADED_TOKEN: "",
+            WIN_RATE,
+            MOST_TRADED_TOKEN: mostTraded.tokenName,
             TOTAL_GAS: 0,
             TOTAL_PNL,
         })
@@ -541,7 +549,7 @@ app.get("/fetch", async (req, res) => {
     const address = req.query.address;
 
     const result = await analyzer.fetchBscData(address);
-    const userDetails = analyzer.analyzeUserDetails();
+    //const userDetails = analyzer.analyzeUserDetails();
     // res.send({
     //     tokens: analyzer.getTokens(),
     //     userDetails: analyzer.getUserDetails()
