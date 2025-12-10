@@ -51,7 +51,7 @@ class WalletAnalyer {
 
     async fetchBscData(address: any) {
 
-        const response = await axios.get(`https://deep-index.moralis.io/api/v2.2/wallets/${address}/history?chain=bsc&order=DESC&limit=50&from_date=1735689600`, {
+        const response = await axios.get(`https://deep-index.moralis.io/api/v2.2/wallets/${address}/history?chain=bsc&order=DESC&from_date=1735689600`, {
             headers: {
                 accept: "application/json",
                 'X-API-Key': process.env.MORALIS_KEY
