@@ -44,9 +44,15 @@ interface UserDetail {
     TOTAL_VOLUME: number;
 }
 
+interface TradeAnaylysis {
+    WINNING_TRADES: Token[],
+    LOSING_TRADES: Token[],
+}
+
 class WalletAnalyer {
     private tokens: Token[] = [];
     private userDetails: UserDetail[] = [];
+    private tradeAnalysis: TradeAnaylysis = {} as TradeAnaylysis;
     private TOTAL_SWAP_COUNT: number = 0;
     private TOTAL_GAS_USED: number = 0;
     private TOTAL_VOLUME: number = 0;
@@ -278,6 +284,27 @@ class WalletAnalyer {
         })
     }
 
+    analyzeTradeDetails() {
+
+        //Best 5 winning trades (highest to lowest PNL)
+        const winningTrades = this.tokens.filter(token => token.details.PNL > 0)
+        .sort((a, b) => a.details.PNL - b.details.PNL)
+        .slice(0, 5);
+
+        //Top 5 losing trades (most negative to least negative PNL)
+        const losingTrades = this.tokens.filter(token => token.details.PNL < 0)
+        .sort((a, b) => a.details.PNL - b.details.PNL)
+        .slice(0, 5);
+
+        this.tradeAnalysis = {
+            WINNING_TRADES: winningTrades,
+            LOSING_TRADES: losingTrades,
+        }
+
+        console.log("trade anaylysis: ", this.tradeAnalysis)
+        
+    }
+
 // data = {
 //         tokens:  [
 //     {
@@ -399,6 +426,10 @@ class WalletAnalyer {
 
     getUserDetails() {
         return this.userDetails;
+    }
+
+    getTradeAnalysis() {
+        return this.tradeAnalysis;
     }
 
 
@@ -552,16 +583,20 @@ async function initialfn() {
 
     const result = await analyzer.fetchBscData(address);
     const result2 = analyzer.analyzeUserDetails();
+    const result3 = analyzer.analyzeTradeDetails();
 
     let tokens = analyzer.getTokens();
     let userDetails = analyzer.getUserDetails()
-    console.log("tokens: ",  tokens);
-    console.log("user details: ", userDetails);
+    let tradeAnalysis = analyzer.getTradeAnalysis();
+    // console.log("tokens: ",  tokens);
+    // console.log("user details: ", userDetails);
+    // console.log("trade analysis: ", tradeAnalysis);
+    
     
     
 }
 
-//initialfn();
+initialfn();
 
 app.get("/fetch", async (req, res) => {
     const analyzer = new WalletAnalyer();
@@ -570,13 +605,15 @@ app.get("/fetch", async (req, res) => {
 
     const result = await analyzer.fetchBscData(address);
     const userDetails = analyzer.analyzeUserDetails();
+    const tradeDetails = analyzer.analyzeTradeDetails();
     // res.send({
     //     tokens: analyzer.getTokens(),
     //     userDetails: analyzer.getUserDetails()
     // });
     res.json({
         tokens: analyzer.getTokens(),
-        userDetails: analyzer.getUserDetails()
+        userDetails: analyzer.getUserDetails(),
+        tradeDetails: analyzer.getTradeAnalysis()
     });
     
 
