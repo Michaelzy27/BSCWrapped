@@ -38,14 +38,18 @@ interface UserDetail {
     WORST_TRADE: any;
     WIN_RATE: number;
     MOST_TRADED_TOKEN: string;
-    TOTAL_GAS: number;
+    TOTAL_GAS_IN_BNB: number;
+    TOTAL_GAS_IN_USD: number;
     TOTAL_PNL: number;
+    TOTAL_VOLUME: number;
 }
 
 class WalletAnalyer {
     private tokens: Token[] = [];
     private userDetails: UserDetail[] = [];
     private TOTAL_SWAP_COUNT: number = 0;
+    private TOTAL_GAS_USED: number = 0;
+    private TOTAL_VOLUME: number = 0;
 
     constructor() {}
 
@@ -82,6 +86,8 @@ class WalletAnalyer {
         for (let i = 0; i < allTokenSwaps.length; i++) {            
 
             let currentTokenSwap = allTokenSwaps[i]; //a single token swap object child from the array.
+            console.log("current token swap: ", currentTokenSwap);
+            
 
             let swapDirection;   // - to denote buy or sell. -buy
 
@@ -97,6 +103,8 @@ class WalletAnalyer {
               
             //console.log("nt: ", nativeTransfer[0].direction);
             console.log("direction: " + swapDirection);
+
+            let valueInUSD: number = 0; 
             
 
 
@@ -116,7 +124,7 @@ class WalletAnalyer {
                 // let valueSwapped = nativeTransfer[0].value_formatted; //in BNB
                 // console.log("value swapped: ", valueSwapped);
                 
-                let valueInUSD; 
+                
 
                 //now we can add this value to the token object for pnl calculation.
                 if(swapDirection === "buy"){
@@ -150,6 +158,12 @@ class WalletAnalyer {
                 console.log("There is no swap? or something else");
                 
             }
+
+            //this adds the gas used for this (current) swap to the total gas used.
+            this.TOTAL_GAS_USED += Number(currentTokenSwap.transaction_fee);
+
+            //this adds the volume for this (current) swap to the total volume.
+            this.TOTAL_VOLUME += valueInUSD;
 
         };        
     }
@@ -245,13 +259,22 @@ class WalletAnalyer {
         const positivePNLCount = this.tokens.filter(token => token.details.PNL > 0).length
         const WIN_RATE = (positivePNLCount / this.TOTAL_SWAP_COUNT) * 100;
 
+        /*total gas used
+        this.TOTAL_GAS_USED is in BNB
+        now we convert it to USD by multiplying with current BNB price (890 USD)
+        also note it'll be better to get current price of bnb using getBNBPrice() function but for now we use a hardcoded value here due tom API limit.
+        */
+        let totalGasInUsd = this.TOTAL_GAS_USED * 890  //890 
+
         this.userDetails.push({
             BEST_TRADE: bestTrade,
             WORST_TRADE: worstTrade,
             WIN_RATE,
             MOST_TRADED_TOKEN: mostTraded.tokenName,
-            TOTAL_GAS: 0,
+            TOTAL_GAS_IN_BNB: this.TOTAL_GAS_USED,
+            TOTAL_GAS_IN_USD: totalGasInUsd,
             TOTAL_PNL,
+            TOTAL_VOLUME: this.TOTAL_VOLUME,
         })
     }
 
@@ -538,7 +561,7 @@ async function initialfn() {
     
 }
 
-//initialfn();
+initialfn();
 
 app.get("/fetch", async (req, res) => {
     const analyzer = new WalletAnalyer();
