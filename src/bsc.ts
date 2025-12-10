@@ -50,7 +50,7 @@ class WalletAnalyer {
         const response = await axios.get(`https://deep-index.moralis.io/api/v2.2/wallets/${address}/history?chain=bsc&order=DESC&limit=50&from_date=1735689600`, {
             headers: {
                 accept: "application/json",
-                'X-API-Key': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6Ijc2YTlkOTYyLWI2OWMtNGJlOC04NDA2LTRhZTVjYjFjOWEwZiIsIm9yZ0lkIjoiNDg1MTczIiwidXNlcklkIjoiNDk5MTUyIiwidHlwZUlkIjoiODJhNDRkNDUtNGVjMS00YWRmLWI1ZDYtZjA2MTg4NzgwMzI0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NjUyMzAzMzgsImV4cCI6NDkyMDk5MDMzOH0.iSuwnIY4qiQuobZwWAZVJVjNwbyZNxpiVleIrdvhLng'
+                'X-API-Key': process.env.MORALIS_KEY
             },
         })
 
