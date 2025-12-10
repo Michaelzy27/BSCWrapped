@@ -1,7 +1,9 @@
 import axios from 'axios';
 import express from 'express';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
@@ -94,11 +96,11 @@ class WalletAnalyer {
             
             
             if(nativeTransfer[0].token_symbol === "BNB" && nativeTransfer[0].direction === "receive") {
-                const bnbPrice = this.getPriceOfBNB(blockNumber); //gets the price of BNB at that time of swap using the block number.
+                const bnbPrice = await this.getPriceOfBNB(blockNumber); //gets the price of BNB at that time of swap using the block number.
 
                 //to get the value of usd that the person swapped to or swapped for.
                 let valueSwapped = nativeTransfer[0].value; //in BNB
-                let valueInUSD = valueSwapped * await bnbPrice;   // usd value of swap at time of swap.                
+                let valueInUSD = valueSwapped * bnbPrice;   // usd value of swap at time of swap.                
 
                 //now we can add this value to the token object for pnl calculation.
                 if(swapDirection === "buy"){
