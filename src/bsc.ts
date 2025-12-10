@@ -47,7 +47,7 @@ class WalletAnalyer {
 
     async fetchBscData(address: any) {
 
-        const response = await axios.get(`https://deep-index.moralis.io/api/v2.2/wallets/${address}/history?chain=bsc&order=DESC&limit=25&from_date=1735689600`, {
+        const response = await axios.get(`https://deep-index.moralis.io/api/v2.2/wallets/${address}/history?chain=bsc&order=DESC&limit=50&from_date=1735689600`, {
             headers: {
                 accept: "application/json",
                 'X-API-Key': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6Ijc2YTlkOTYyLWI2OWMtNGJlOC04NDA2LTRhZTVjYjFjOWEwZiIsIm9yZ0lkIjoiNDg1MTczIiwidXNlcklkIjoiNDk5MTUyIiwidHlwZUlkIjoiODJhNDRkNDUtNGVjMS00YWRmLWI1ZDYtZjA2MTg4NzgwMzI0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NjUyMzAzMzgsImV4cCI6NDkyMDk5MDMzOH0.iSuwnIY4qiQuobZwWAZVJVjNwbyZNxpiVleIrdvhLng'
@@ -84,31 +84,63 @@ class WalletAnalyer {
             const blockNumber = allTokenSwaps[i].block_number; //the block number of the swap transaction. (past)
             
             //erc20_transfer seems to always be a single child array. so `erc20_transfers[0]` checks for the direction.
-            currentTokenSwap.erc20_transfers[0].direction === "send" ? swapDirection = "sell" : swapDirection = "buy";  //did user buy or sell?
+            currentTokenSwap.erc20_transfers[0].direction === "send" ? swapDirection = "sell" : swapDirection = "buy";  //did user buy or sell? foolproof?
             let tokenName = currentTokenSwap.erc20_transfers[0].token_name;
 
             //to get the value of bnb that he sold for and add/subtract it to his object
             let nativeTransfer = currentTokenSwap.native_transfers
-            //console.log(nativeTransfer);            
+            console.log(nativeTransfer);            
               
-            console.log("nt: ", nativeTransfer[0].direction);
+            //console.log("nt: ", nativeTransfer[0].direction);
             console.log("direction: " + swapDirection);
             
+
+
+            /* BUY CASE - usually, when user BUYS a token, the native_transfer usually has 2 child object, one for bnb sent (actual amount bought), the 
+            the other for bnb received (appears to be some sort of fee refund). but we only care about the bnb sent object. But it seems like in
+            some cases there is only bnb a single native_transfer child object which is bnb sent. so to be safe, we will chck for length of
+            native_transfer to handle both cases.
             
-            if(nativeTransfer[0].token_symbol === "BNB" && nativeTransfer[0].direction === "receive") {
+            SELL CASE - usually when user SELLS a token, the native_transfer usually has only 1 child object, which is bnb received (actual amount sold for).
+            ??case where there is 2 child objets?? need to research more on this.
+
+            */
+            if(nativeTransfer[0].token_symbol === "BNB") {
                 const bnbPrice = await this.getPriceOfBNB(blockNumber); //gets the price of BNB at that time of swap using the block number.
 
                 //to get the value of usd that the person swapped to or swapped for.
-                let valueSwapped = nativeTransfer[0].value; //in BNB
-                let valueInUSD = valueSwapped * bnbPrice;   // usd value of swap at time of swap.                
+                // let valueSwapped = nativeTransfer[0].value_formatted; //in BNB
+                // console.log("value swapped: ", valueSwapped);
+                
+                let valueInUSD; 
 
                 //now we can add this value to the token object for pnl calculation.
                 if(swapDirection === "buy"){
+
+                    if(nativeTransfer.length > 1) { //if length > 1, there is fee refund therefore we use second object to get actual bnb sent.
+
+                        let valueSwapped = nativeTransfer[1].value_formatted; //value in BNB
+                        valueInUSD = valueSwapped * await bnbPrice;   // usd value of swap at time of swap.
+
+                    } else {
+                        
+                        let valueSwapped = nativeTransfer[0].value_formatted;
+                        valueInUSD = valueSwapped * await bnbPrice;   // usd value of swap at time of swap.
+
+                    }
+
                     this.addTokenBuy(tokenName, valueInUSD);
-                    console.log("tokenInBuy", this.tokens);
+                    //console.log("tokenInBuy", this.tokens);
+
                 }else{
+
+                    //usually only one native transfer object when selling.
+                    let valueSwapped = nativeTransfer[0].value_formatted; //in BNB
+                    valueInUSD = valueSwapped * await bnbPrice;   // usd value of swap at time of swap.
+
                     this.addTokenSell(tokenName, valueInUSD);
-                    console.log("tokenInSell", this.tokens);
+                    //console.log("tokenInSell", this.tokens);
+
                 }
             } else {
                 console.log("There is no swap? or something else");
@@ -187,6 +219,29 @@ class WalletAnalyer {
                 }
             })
         }
+    }
+
+    analyzeUserDetails() {
+        //highest pnl
+        const bestTrade = this.tokens.reduce((max, token) => (token.details.PNL > max.details.PNL) ? token : max); 
+
+        //lowest pnl
+        const worstTrade = this.tokens.reduce((min, token) => (token.details.PNL < min.details.PNL) ? token : min);
+
+        //total pnl
+        let TOTAL_PNL = 0;
+        for (const token of this.tokens) {
+            TOTAL_PNL += token.details.PNL;
+        }
+
+        this.userDetails.push({
+            BEST_TRADE: bestTrade,
+            WORST_TRADE: worstTrade,
+            WIN_RATE: 0,
+            MOST_TRADED_TOKEN: "",
+            TOTAL_GAS: 0,
+            TOTAL_PNL,
+        })
     }
 
     getTokens() {
@@ -347,10 +402,13 @@ async function initialfn() {
     
 
     const result = await analyzer.fetchBscData(address);
+    const result2 = analyzer.analyzeUserDetails();
 
     let tokens = analyzer.getTokens();
     let userDetails = analyzer.getUserDetails()
     console.log("tokens: ",  tokens);
+    console.log("user details: ", userDetails);
+    
     
 }
 
@@ -362,6 +420,7 @@ app.get("/fetch", async (req, res) => {
     const address = req.query.address;
 
     const result = await analyzer.fetchBscData(address);
+    const userDetails = analyzer.analyzeUserDetails();
     // res.send({
     //     tokens: analyzer.getTokens(),
     //     userDetails: analyzer.getUserDetails()
