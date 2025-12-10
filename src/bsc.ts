@@ -288,7 +288,7 @@ class WalletAnalyer {
 
         //Best 5 winning trades (highest to lowest PNL)
         const winningTrades = this.tokens.filter(token => token.details.PNL > 0)
-        .sort((a, b) => a.details.PNL - b.details.PNL)
+        .sort((a, b) => b.details.PNL - a.details.PNL)
         .slice(0, 5);
 
         //Top 5 losing trades (most negative to least negative PNL)
@@ -430,6 +430,10 @@ class WalletAnalyer {
 
     getTradeAnalysis() {
         return this.tradeAnalysis;
+    }
+
+    getTotalSwapCount() {
+        return this.TOTAL_SWAP_COUNT;
     }
 
 
@@ -613,7 +617,8 @@ app.get("/fetch", async (req, res) => {
     res.json({
         tokens: analyzer.getTokens(),
         userDetails: analyzer.getUserDetails(),
-        tradeDetails: analyzer.getTradeAnalysis()
+        tradeDetails: analyzer.getTradeAnalysis(),
+        totalSwapCount: analyzer.getTotalSwapCount(),
     });
     
 
