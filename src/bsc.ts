@@ -105,7 +105,14 @@ class WalletAnalyer {
 
             //to get the value of bnb that he sold for and add/subtract it to his object
             let nativeTransfer = currentTokenSwap.native_transfers
-            console.log(nativeTransfer);            
+            console.log(nativeTransfer);
+            
+            /* Skip this iteration if nativeTransfer is empty or doesn't exist
+               empty native transfer means stablecoin swap */ 
+            if (!nativeTransfer || nativeTransfer.length === 0) {
+                console.log("No native transfer found, skipping...");
+                continue; // Skip to next iteration
+            }
               
             //console.log("nt: ", nativeTransfer[0].direction);
             console.log("direction: " + swapDirection);
