@@ -599,8 +599,8 @@ async function initialfn() {
     let tokens = analyzer.getTokens();
     let userDetails = analyzer.getUserDetails()
     let tradeAnalysis = analyzer.getTradeAnalysis();
-    // console.log("tokens: ",  tokens);
-    // console.log("user details: ", userDetails);
+    console.log("tokens: ",  tokens);
+    console.log("user details: ", userDetails);
     // console.log("trade analysis: ", tradeAnalysis);
     
     
