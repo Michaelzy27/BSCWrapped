@@ -623,6 +623,8 @@ app.get("/fetch", async (req, res) => {
 
     //if user has no swaps, exit function and return totalSwapCount: 0
     if(result === false) {
+        console.log("test log");
+        
         return res.status(404).json({
             success: false,
             errorCode: "NO_SWAPS_FOUND",
