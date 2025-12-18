@@ -76,7 +76,11 @@ class WalletAnalyer {
         const allTokenSwaps =  data.result.filter((tx: any) => tx.category === "token swap");
         //console.log("All token swaps: ", allTokenSwaps);
 
-        this.TOTAL_SWAP_COUNT = allTokenSwaps.length;   //the total swaps made by the wallet.        
+        this.TOTAL_SWAP_COUNT = allTokenSwaps.length;   //the total swaps made by the wallet.   
+        
+        if(allTokenSwaps.length === 0) {
+            return false; //user has no swaps. therefore exit function.
+        }
         
         await this.analyzeTokenSwaps(allTokenSwaps);
         
@@ -616,6 +620,14 @@ app.get("/fetch", async (req, res) => {
     console.log("user wallet: ", address);
 
     const result = await analyzer.fetchBscData(address);
+
+    //if user has no swaps, exit function and return totalSwapCount: 0
+    if(!result) {
+        return res.json({
+            totalSwapCount: 0,
+        })
+    }
+    
     const userDetails = analyzer.analyzeUserDetails();
     const tradeDetails = analyzer.analyzeTradeDetails();
     // res.send({
