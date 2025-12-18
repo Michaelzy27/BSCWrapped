@@ -623,11 +623,14 @@ app.get("/fetch", async (req, res) => {
 
     //if user has no swaps, exit function and return totalSwapCount: 0
     if(!result) {
-        return res.json({
+        return res.status(404).json({
+            success: false,
+            errorCode: "NO_SWAPS_FOUND",
+            message: "No token swaps found for this wallet address.",
             totalSwapCount: 0,
         })
     }
-    
+
     const userDetails = analyzer.analyzeUserDetails();
     const tradeDetails = analyzer.analyzeTradeDetails();
     // res.send({
