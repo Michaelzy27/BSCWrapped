@@ -613,6 +613,7 @@ app.get("/fetch", async (req, res) => {
     const analyzer = new WalletAnalyer();
     //const address = "0xf52cbff41f95886711f7343fc43928d2416eccc9";
     const address = req.query.address;
+    console.log("user wallet: ", address);
 
     const result = await analyzer.fetchBscData(address);
     const userDetails = analyzer.analyzeUserDetails();
