@@ -622,7 +622,7 @@ app.get("/fetch", async (req, res) => {
     const result = await analyzer.fetchBscData(address);
 
     //if user has no swaps, exit function and return totalSwapCount: 0
-    if(!result) {
+    if(result === false) {
         return res.status(404).json({
             success: false,
             errorCode: "NO_SWAPS_FOUND",
