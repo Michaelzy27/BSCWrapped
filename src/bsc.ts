@@ -671,8 +671,8 @@ app.get("/home", async (req, res) => {
     //     })
     // }
 
-    const userDetails = analyzer.analyzeUserDetails();
-    const tradeDetails = analyzer.analyzeTradeDetails();
+    //const userDetails = analyzer.analyzeUserDetails();
+    //const tradeDetails = analyzer.analyzeTradeDetails();
     // res.send({
     //     tokens: analyzer.getTokens(),
     //     userDetails: analyzer.getUserDetails()
