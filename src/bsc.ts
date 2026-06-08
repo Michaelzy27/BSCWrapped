@@ -774,4 +774,16 @@ app.get("/home", async (req, res) => {
     // })
 });
 
+app.get("/api/mpp32-verify", async (req, res) => {
+    const analyzer = new WalletAnalyer();
+    const address = "0x983cCe9aDDF988e4CCcD948804BeC67904799Fe5";
+
+    res.type('text/plain').send("b2e001dcbf5e270b0ecae53551711f0c6cfaeaeaf9ecbef3eb5fe2850e16f027");
+    
+
+    // fetchBscData().then(data => {
+    //     res.send(data);
+    // })
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
