@@ -657,7 +657,7 @@ app.get("/home", async (req, res) => {
     const analyzer = new WalletAnalyer();
     const address = "0x983cCe9aDDF988e4CCcD948804BeC67904799Fe5";
 
-    const result = await analyzer.fetchBscData(address);
+    //const result = await analyzer.fetchBscData(address);
 
     //if user has no swaps, exit function and return totalSwapCount: 0
     // if(result === false) {
@@ -677,8 +677,92 @@ app.get("/home", async (req, res) => {
     //     tokens: analyzer.getTokens(),
     //     userDetails: analyzer.getUserDetails()
     // });
+
+    const tokens: Token[] = [
+  {
+    tokenName: "SOL",
+    details: {
+      totalSwaps: 145,
+      totalVolume: 125000,
+      buyValue: 70000,
+      sellValue: 85000,
+      PNL: 15000,
+    },
+  },
+  {
+    tokenName: "BONK",
+    details: {
+      totalSwaps: 320,
+      totalVolume: 48000,
+      buyValue: 25000,
+      sellValue: 31000,
+      PNL: 6000,
+    },
+  },
+  {
+    tokenName: "JUP",
+    details: {
+      totalSwaps: 98,
+      totalVolume: 76000,
+      buyValue: 42000,
+      sellValue: 39000,
+      PNL: -3000,
+    },
+  },
+  {
+    tokenName: "WIF",
+    details: {
+      totalSwaps: 210,
+      totalVolume: 93000,
+      buyValue: 50000,
+      sellValue: 62000,
+      PNL: 12000,
+    },
+  },
+  {
+    tokenName: "PYTH",
+    details: {
+      totalSwaps: 67,
+      totalVolume: 28000,
+      buyValue: 18000,
+      sellValue: 16000,
+      PNL: -2000,
+    },
+  },
+  {
+    tokenName: "RAY",
+    details: {
+      totalSwaps: 175,
+      totalVolume: 67000,
+      buyValue: 35000,
+      sellValue: 47000,
+      PNL: 12000,
+    },
+  },
+  {
+    tokenName: "FARTCOIN",
+    details: {
+      totalSwaps: 412,
+      totalVolume: 150000,
+      buyValue: 80000,
+      sellValue: 105000,
+      PNL: 25000,
+    },
+  },
+  {
+    tokenName: "POPCAT",
+    details: {
+      totalSwaps: 289,
+      totalVolume: 54000,
+      buyValue: 32000,
+      sellValue: 29000,
+      PNL: -3000,
+    },
+  },
+];
+
     res.json({
-        tokens: analyzer.getTokens(),
+        tokens: tokens,
         //userDetails: analyzer.getUserDetails(),
         //tradeDetails: analyzer.getTradeAnalysis(),
         //totalSwapCount: analyzer.getTotalSwapCount(),
