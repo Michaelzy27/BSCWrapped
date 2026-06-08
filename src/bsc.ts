@@ -660,16 +660,16 @@ app.get("/home", async (req, res) => {
     const result = await analyzer.fetchBscData(address);
 
     //if user has no swaps, exit function and return totalSwapCount: 0
-    if(result === false) {
-        console.log("test log");
+    // if(result === false) {
+    //     console.log("test log");
         
-        return res.status(404).json({
-            success: false,
-            errorCode: "NO_SWAPS_FOUND",
-            message: "No token swaps found for this wallet address.",
-            totalSwapCount: 0,
-        })
-    }
+    //     return res.status(404).json({
+    //         success: false,
+    //         errorCode: "NO_SWAPS_FOUND",
+    //         message: "No token swaps found for this wallet address.",
+    //         totalSwapCount: 0,
+    //     })
+    // }
 
     const userDetails = analyzer.analyzeUserDetails();
     const tradeDetails = analyzer.analyzeTradeDetails();
@@ -679,9 +679,9 @@ app.get("/home", async (req, res) => {
     // });
     res.json({
         tokens: analyzer.getTokens(),
-        userDetails: analyzer.getUserDetails(),
-        tradeDetails: analyzer.getTradeAnalysis(),
-        totalSwapCount: analyzer.getTotalSwapCount(),
+        //userDetails: analyzer.getUserDetails(),
+        //tradeDetails: analyzer.getTradeAnalysis(),
+        //totalSwapCount: analyzer.getTotalSwapCount(),
     });
     
 
