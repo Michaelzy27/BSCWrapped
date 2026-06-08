@@ -652,4 +652,42 @@ app.get("/fetch", async (req, res) => {
     // })
 });
 
+//temp for the pumpfun stuff
+app.get("/home", async (req, res) => {
+    const analyzer = new WalletAnalyer();
+    const address = "0x983cCe9aDDF988e4CCcD948804BeC67904799Fe5";
+
+    const result = await analyzer.fetchBscData(address);
+
+    //if user has no swaps, exit function and return totalSwapCount: 0
+    if(result === false) {
+        console.log("test log");
+        
+        return res.status(404).json({
+            success: false,
+            errorCode: "NO_SWAPS_FOUND",
+            message: "No token swaps found for this wallet address.",
+            totalSwapCount: 0,
+        })
+    }
+
+    const userDetails = analyzer.analyzeUserDetails();
+    const tradeDetails = analyzer.analyzeTradeDetails();
+    // res.send({
+    //     tokens: analyzer.getTokens(),
+    //     userDetails: analyzer.getUserDetails()
+    // });
+    res.json({
+        tokens: analyzer.getTokens(),
+        userDetails: analyzer.getUserDetails(),
+        tradeDetails: analyzer.getTradeAnalysis(),
+        totalSwapCount: analyzer.getTotalSwapCount(),
+    });
+    
+
+    // fetchBscData().then(data => {
+    //     res.send(data);
+    // })
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
